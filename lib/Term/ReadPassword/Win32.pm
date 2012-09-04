@@ -14,14 +14,14 @@ use vars qw(
 @EXPORT = qw(read_password);
 @EXPORT_OK = qw(ReadPasswd read_passwd);
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 if (IsWin32()) {
 	eval('use Win32');
 	eval('use Win32::Console');
 	eval('use Win32API::File');
 } else {
-	eval('use Term::ReadPassword');
+	eval('require Term::ReadPassword');
 }
 
 # The maximum amount of data for the input buffer to hold
@@ -149,6 +149,9 @@ keyin:
 	Win32API::File::CloseHandle($CONOUT->{'handle'});
 	$CONOUT->{'handle'} = $hStderr;
 	
+	$CONIN = undef;
+	close STDIN;
+	open STDIN, '+<CONIN$';
 	return $input;
 }
 
